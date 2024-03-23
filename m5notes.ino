@@ -111,8 +111,9 @@ void setup() {
 
   M5Cardputer.Display.setTextDatum(textdatum_t::top_left);
   M5Cardputer.Display.setTextColor(YELLOW);
-  M5Cardputer.Display.drawString("[A]=Axel F", 0, 3 * fontHeight);
-  M5Cardputer.Display.drawString("[N]=NGGYU", 0, 4 * fontHeight);
+  M5Cardputer.Display.drawString("[A]=Axel", 0, 3 * fontHeight);
+  M5Cardputer.Display.drawString("[N]=Never", 0, 4 * fontHeight);
+  M5Cardputer.Display.drawString("[T]=Take", 0, 5 * fontHeight);
 
   M5Cardputer.Display.setTextColor(WHITE);
   M5Cardputer.Display.setTextDatum(textdatum_t::bottom_right);
@@ -126,6 +127,8 @@ void loop() {
       playNGGYU();
     } else if (M5Cardputer.Keyboard.isKeyPressed('a')) {
       playAxelF();
+    } else if (M5Cardputer.Keyboard.isKeyPressed('t')) {
+      playTakeOnMe();
     }
   }
 }
@@ -140,6 +143,41 @@ void playStaccatoTone(String note, uint32_t duration) {
   uint16_t freq = note_freq[note];
   M5Cardputer.Speaker.tone(freq, duration / 2);
   delay(duration);
+}
+
+void playAxelF() {
+  playing = 1;
+
+  playStaccatoTone("4F", 500);
+  playTone("4Ab", 375);
+  playTone("4F", 200);
+  delay(50);
+  playTone("4F", 125);
+  playTone("4Bb", 250);
+  playTone("4F", 250);
+  playTone("4Eb", 250);
+
+  playStaccatoTone("4F", 500);
+  playTone("5C", 375);
+  playTone("4F", 200);
+  delay(50);
+  playTone("4F", 125);
+  playTone("5Db", 250);
+  playTone("5C", 250);
+  playTone("4Ab", 250);
+
+  playStaccatoTone("4F", 250);
+  playTone("5C", 250);
+  playTone("5F", 250);
+  playTone("4F", 125);
+  playStaccatoTone("4Eb", 250);
+  playTone("4Eb", 125);
+  playTone("4C", 250);
+  playTone("4G", 250);
+  playTone("4F", 1250);
+  delay(1000);
+
+  playing = 0;
 }
 
 void playNGGYU() {
@@ -188,37 +226,46 @@ void playNGGYU() {
   playing = 0;
 }
 
-void playAxelF() {
+void playTakeOnMe() {
+  // offically 169 bpm
+  // so make 1/8 notes 175 instead of 250
   playing = 1;
 
-  playStaccatoTone("4F", 500);
-  playTone("4Ab", 375);
-  playTone("4F", 200);
-  delay(50);
-  playTone("4F", 125);
-  playTone("4Bb", 250);
-  playTone("4F", 250);
-  playTone("4Eb", 250);
+  playStaccatoTone("5F#", 175);
+  playStaccatoTone("5F#", 175);
+  playStaccatoTone("5D", 175);
+  playTone("4B", 175);
+  delay(175);
+  playTone("4B", 175);
+  delay(175);
+  playTone("5E", 175);
 
-  playStaccatoTone("4F", 500);
-  playTone("5C", 375);
-  playTone("4F", 200);
-  delay(50);
-  playTone("4F", 125);
-  playTone("5Db", 250);
-  playTone("5C", 250);
-  playTone("4Ab", 250);
+  delay(175);
+  playTone("5E", 175);
+  delay(175);
+  playTone("5E", 175);
+  playStaccatoTone("5G#", 175);
+  playStaccatoTone("5G#", 175);
+  playStaccatoTone("5A", 175);
+  playStaccatoTone("5B", 175);
 
-  playStaccatoTone("4F", 250);
-  playTone("5C", 250);
-  playTone("5F", 250);
-  playTone("4F", 125);
-  playStaccatoTone("4Eb", 250);
-  playTone("4Eb", 125);
-  playTone("4C", 250);
-  playTone("4G", 250);
-  playTone("4F", 1250);
-  delay(1000);
+  playStaccatoTone("5A", 175);
+  playStaccatoTone("5A", 175);
+  playStaccatoTone("5A", 175);
+  playTone("5E", 175);
+  delay(175);
+  playTone("5D", 175);
+  delay(175);
+  playTone("5F#", 175);
+
+  delay(175);
+  playTone("5F#", 175);
+  delay(175);
+  playTone("5F#", 175);
+  playStaccatoTone("5E", 175);
+  playStaccatoTone("5E", 175);
+  playStaccatoTone("5F#", 175);
+  playStaccatoTone("5E", 175);
 
   playing = 0;
 }
