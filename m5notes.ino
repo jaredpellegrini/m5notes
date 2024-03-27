@@ -5,7 +5,7 @@
  * @license Apache License, Version 2.0 - https://www.apache.org/licenses/LICENSE-2.0
  * @brief   Demonstration of playing notes and songs on the M5 Cardputer.
  * @version 0.1
- * @date    2024-03-23 (Created 2024-03-23)
+ * @date    2024-03-26 (Created 2024-03-23)
  *
  * Targets the M5 Cardputer.
  *
@@ -19,6 +19,7 @@
  * dotted 1/16 note = 187.5 ms
  * 1/16 note = 125 ms
  * staccato = half the length of the note
+ * to raise a note by N octaves, multiply the frequency by 2^N
  * 
  * CHANGELOG
  * v0.1: First version.
@@ -32,6 +33,23 @@ const uint8_t MINOR_VERSION = 1;
 
 // <octave><note>, <freq Hz>
 std::map<String, uint16_t> note_freq = {
+  {"3C", 130.8},
+  {"3C#", 138.6},
+  {"3Db", 138.6},
+  {"3D", 146.8},
+  {"3D#", 155.6},
+  {"3Eb", 155.6},
+  {"3E", 164.8},
+  {"3F", 174.6},
+  {"3F#", 185.0},
+  {"3Gb", 185.0},
+  {"3G", 196.0},
+  {"3G#", 207.7},
+  {"3Ab", 207.7},
+  {"3A", 220.00},
+  {"3A#", 233.1},
+  {"3Bb", 233.1},
+  {"3B", 246.9},
   {"4C", 261.63},
   {"4C#", 277.18},
   {"4Db", 277.18},
@@ -111,9 +129,10 @@ void setup() {
 
   M5Cardputer.Display.setTextDatum(textdatum_t::top_left);
   M5Cardputer.Display.setTextColor(YELLOW);
-  M5Cardputer.Display.drawString("[A]=Axel", 0, 3 * fontHeight);
-  M5Cardputer.Display.drawString("[N]=Never", 0, 4 * fontHeight);
-  M5Cardputer.Display.drawString("[T]=Take", 0, 5 * fontHeight);
+  M5Cardputer.Display.drawString("[A]=Axel F", 0, 3 * fontHeight);
+  M5Cardputer.Display.drawString("[E]=Edelweiss", 0, 4 * fontHeight);
+  M5Cardputer.Display.drawString("[N]=N.G.G.Y.U.", 0, 5 * fontHeight);
+  M5Cardputer.Display.drawString("[T]=Take On Me", 0, 6 * fontHeight);
 
   M5Cardputer.Display.setTextColor(WHITE);
   M5Cardputer.Display.setTextDatum(textdatum_t::bottom_right);
@@ -123,10 +142,12 @@ void setup() {
 void loop() {
   M5Cardputer.update();
   if (M5Cardputer.Keyboard.isChange() && !playing) {
-    if (M5Cardputer.Keyboard.isKeyPressed('n')) {
-      playNGGYU();
-    } else if (M5Cardputer.Keyboard.isKeyPressed('a')) {
+    if (M5Cardputer.Keyboard.isKeyPressed('a')) {
       playAxelF();
+    } else if (M5Cardputer.Keyboard.isKeyPressed('e')) {
+      playEdelweiss();
+    } else if (M5Cardputer.Keyboard.isKeyPressed('n')) {
+      playNGGYU();
     } else if (M5Cardputer.Keyboard.isKeyPressed('t')) {
       playTakeOnMe();
     }
@@ -231,7 +252,8 @@ void playTakeOnMe() {
   // so make 1/8 notes 175 instead of 250
   playing = 1;
 
-  playStaccatoTone("5F#", 175);
+  playTone("5F#", 150);
+  delay(25);
   playStaccatoTone("5F#", 175);
   playStaccatoTone("5D", 175);
   playTone("4B", 175);
@@ -244,12 +266,14 @@ void playTakeOnMe() {
   playTone("5E", 175);
   delay(175);
   playTone("5E", 175);
-  playStaccatoTone("5G#", 175);
+  playTone("5G#", 150);
+  delay(25);
   playStaccatoTone("5G#", 175);
   playStaccatoTone("5A", 175);
   playStaccatoTone("5B", 175);
 
-  playStaccatoTone("5A", 175);
+  playTone("5A", 150);
+  delay(25);
   playStaccatoTone("5A", 175);
   playStaccatoTone("5A", 175);
   playTone("5E", 175);
@@ -262,10 +286,97 @@ void playTakeOnMe() {
   playTone("5F#", 175);
   delay(175);
   playTone("5F#", 175);
-  playStaccatoTone("5E", 175);
+  playTone("5E", 150);
+  delay(50);
   playStaccatoTone("5E", 175);
   playStaccatoTone("5F#", 175);
   playStaccatoTone("5E", 175);
 
   playing = 0;
+}
+
+void playEdelweiss() {
+  // 80 bpm :: quarter note = 750ms
+
+  uint32_t duration = 500;
+
+  M5Cardputer.Speaker.tone(note_freq["5D"], duration*2);
+  M5Cardputer.Speaker.tone(note_freq["3Bb"], duration*3);
+  delay(duration); // E
+  M5Cardputer.Speaker.tone(note_freq["4Bb"], duration*2);
+  M5Cardputer.Speaker.tone(note_freq["4F"], duration*2);
+  delay(duration);
+  M5Cardputer.Speaker.tone(note_freq["5F"], duration);
+  delay(duration); // del
+
+  M5Cardputer.Speaker.tone(note_freq["6C"], duration*3);
+  M5Cardputer.Speaker.tone(note_freq["3A"], duration*3);
+  delay(duration); // weiss,
+  M5Cardputer.Speaker.tone(note_freq["5Eb"], duration-50);
+  M5Cardputer.Speaker.tone(note_freq["5F"], duration-50);
+  M5Cardputer.Speaker.tone(note_freq["4F"], duration*2);
+  delay(duration);
+  M5Cardputer.Speaker.tone(note_freq["5Eb"], duration-50);
+  M5Cardputer.Speaker.tone(note_freq["5F"], duration-50);
+  delay(duration);
+
+  M5Cardputer.Speaker.tone(note_freq["5Bb"], duration*2);
+  M5Cardputer.Speaker.tone(note_freq["4D"], duration*3);
+  delay(duration); // E
+  M5Cardputer.Speaker.tone(note_freq["4Bb"], duration*2);
+  M5Cardputer.Speaker.tone(note_freq["4F"], duration*2);
+  delay(duration);
+  M5Cardputer.Speaker.tone(note_freq["5F"], duration);
+  delay(duration); // del
+
+  M5Cardputer.Speaker.tone(note_freq["5Eb"], duration*3);
+  M5Cardputer.Speaker.tone(note_freq["3G"], duration*3);
+  delay(duration); // weiss,
+  M5Cardputer.Speaker.tone(note_freq["4Eb"], duration);
+  delay(duration);
+  M5Cardputer.Speaker.tone(note_freq["4Bb"], duration);
+  delay(duration);
+
+  M5Cardputer.Speaker.tone(note_freq["5D"], (duration*2)-50);
+  M5Cardputer.Speaker.tone(note_freq["3F"], duration*3);
+  delay(duration); // Ev
+  M5Cardputer.Speaker.tone(note_freq["4Bb"], duration*2);
+  M5Cardputer.Speaker.tone(note_freq["4F"], duration*2);
+  delay(duration);
+  M5Cardputer.Speaker.tone(note_freq["5D"], duration-50);
+  delay(duration); // 'ry
+
+  M5Cardputer.Speaker.tone(note_freq["5D"], duration);
+  M5Cardputer.Speaker.tone(note_freq["4Bb"], duration*3);
+  M5Cardputer.Speaker.tone(note_freq["4F"], duration*3);
+  M5Cardputer.Speaker.tone(note_freq["3G"], duration*3);
+  delay(duration); // morn
+  M5Cardputer.Speaker.tone(note_freq["5Eb"], duration);
+  delay(duration); // ing
+  M5Cardputer.Speaker.tone(note_freq["5F"], duration);
+  delay(duration); // you
+
+  M5Cardputer.Speaker.tone(note_freq["5G"], duration*3);
+  M5Cardputer.Speaker.tone(note_freq["4C"], duration*3);
+  M5Cardputer.Speaker.tone(note_freq["3C"], duration*3);
+  delay(duration); // greet
+  M5Cardputer.Speaker.tone(note_freq["5Eb"], duration-50);
+  M5Cardputer.Speaker.tone(note_freq["4Bb"], duration-50);
+  delay(duration);
+  M5Cardputer.Speaker.tone(note_freq["5Eb"], duration-50);
+  M5Cardputer.Speaker.tone(note_freq["4Bb"], duration-50);
+  delay(duration);
+
+  M5Cardputer.Speaker.tone(note_freq["5F"], duration*3);
+  M5Cardputer.Speaker.tone(note_freq["3F"], duration*3);
+  delay(duration); // me.
+  M5Cardputer.Speaker.tone(note_freq["5Eb"], duration-50);
+  M5Cardputer.Speaker.tone(note_freq["4A"], duration-50);
+  M5Cardputer.Speaker.tone(note_freq["4F"], duration);
+  delay(duration);
+  M5Cardputer.Speaker.tone(note_freq["5Eb"], duration-50);
+  M5Cardputer.Speaker.tone(note_freq["4A"], duration-50);
+  M5Cardputer.Speaker.tone(note_freq["4C"], duration);
+  delay(duration);
+
 }

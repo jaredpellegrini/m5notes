@@ -18,6 +18,7 @@ Targets the [M5 Cardputer](https://docs.m5stack.com/en/core/Cardputer).
 * dotted 1/16 note = 187.5 ms
 * 1/16 note = 125 ms
 * _staccato = half the length of the note_
+* _to raise a note by N octaves, multiply the frequency by 2^N_
 
 # CHANGELOG
 
